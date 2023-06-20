@@ -1,12 +1,35 @@
+import useAi from '@/hooks/useAi';
+import { useEffect, useRef, useState } from 'react';
+
 export default function MessageForm() {
+  const [text, setText] = useState<string>('');
+  const inputRef = useRef<HTMLInputElement>(null);
+  const { question } = useAi();
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    question(text);
+    setText('');
+  };
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
   return (
-    <div className="flex items-center justify-between w-full p-3 border-t border-gray-300">
+    <form
+      className="flex items-center justify-between w-full p-3 border-t border-gray-300"
+      onSubmit={handleSubmit}
+    >
       <input
         type="text"
         placeholder="Message"
-        className="block w-full py-2 pl-4 mx-3 bg-gray-100 rounded-full outline-none focus:text-gray-700"
+        className="block w-full py-2 pl-4 mx-3 bg-gray-100 rounded-full outline-none focus:text-gray-700 focus:shadow-md"
         name="message"
         required
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        ref={inputRef}
       />
       <button type="submit">
         <svg
@@ -18,6 +41,6 @@ export default function MessageForm() {
           <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
         </svg>
       </button>
-    </div>
+    </form>
   );
 }

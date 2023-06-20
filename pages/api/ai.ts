@@ -2,28 +2,15 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import axios from 'axios';
 import { API_KEY } from '@/config';
+import { Answer } from '@/types';
 
-interface Generation {
-  text: string;
-  tokens: number;
-}
-interface Usage {
-  prompt_tokens: number;
-  generated_tokens: number;
-  total_tokens: number;
-}
-interface Data {
-  id: string;
-  generations: Generation[];
-  usage: Usage;
-}
 interface Error {
   error: string;
 }
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Data | Error>
+  res: NextApiResponse<Answer | Error>
 ) {
   if (req.method === 'POST') {
     try {
@@ -37,7 +24,7 @@ export default async function handler(
       });
       const response = await instance.post('/v1/inference/kogpt/generation', {
         prompt,
-        max_tokens: 120,
+        max_tokens: 64,
       });
 
       res.status(200).json(response.data);
