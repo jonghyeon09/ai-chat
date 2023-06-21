@@ -1,16 +1,14 @@
 import useAi from '@/hooks/useAi';
-import { useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 
-export default function MessageForm() {
-  const [text, setText] = useState<string>('');
+interface Props {
+  text: string;
+  setText: React.Dispatch<React.SetStateAction<string>>;
+  onSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+}
+
+function MessageForm({ text, setText, onSubmit }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const { question } = useAi();
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    question(text);
-    setText('');
-  };
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -19,7 +17,7 @@ export default function MessageForm() {
   return (
     <form
       className="flex items-center justify-between w-full p-3 border-t border-gray-300"
-      onSubmit={handleSubmit}
+      onSubmit={onSubmit}
     >
       <input
         type="text"
@@ -44,3 +42,5 @@ export default function MessageForm() {
     </form>
   );
 }
+
+export default memo(MessageForm);

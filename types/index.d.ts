@@ -12,3 +12,8 @@ export interface Answer {
   generations: Generation[];
   usage: Usage;
 }
+export interface Chat {
+  id: number;
+  question?: string;
+  answer?: string;
+}

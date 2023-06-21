@@ -14,7 +14,7 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     try {
-      const { prompt } = req.body;
+      const { question } = req.body;
       const instance = axios.create({
         baseURL: 'https://api.kakaobrain.com',
         headers: {
@@ -23,8 +23,9 @@ export default async function handler(
         },
       });
       const response = await instance.post('/v1/inference/kogpt/generation', {
-        prompt,
-        max_tokens: 64,
+        prompt: `질문: ${question || ''} 답:`,
+        max_tokens: 120,
+        temperature: 0.2,
       });
 
       res.status(200).json(response.data);

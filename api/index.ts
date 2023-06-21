@@ -1,10 +1,10 @@
 import { Answer } from '@/types';
 import axios, { AxiosResponse } from 'axios';
 
-const question = async (prompt: string) => {
+const question = async (question: string) => {
   try {
     const res: AxiosResponse<Answer> = await axios.post('/api/ai', {
-      prompt,
+      question,
     });
 
     return res;
