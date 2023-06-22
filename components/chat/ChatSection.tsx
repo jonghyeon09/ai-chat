@@ -4,24 +4,25 @@ import MessageForm from './MessageForm';
 import MessageList from './MessageList';
 import useAi from '@/hooks/useAi';
 import { Chat } from '@/types';
+import { useInput } from '@/hooks/useInput';
 
 export default function ChatSection() {
-  const [text, setText] = useState<string>('');
   const [count, setCount] = useState(0);
   const [messages, setMeassages] = useState<Chat[]>();
+  const { value, onChange, reset } = useInput('');
   const { answer, question } = useAi();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const chat = {
       id: count,
-      question: text,
+      question: value,
     };
     setCount(count + 1);
     setMeassages([chat]);
     if (messages) setMeassages([...messages, chat]);
-    question(text);
-    setText('');
+    question(value);
+    reset();
   };
 
   useEffect(() => {
@@ -41,7 +42,7 @@ export default function ChatSection() {
     <div className="w-full max-w-2xl border rounded mx-auto">
       <ChatHeader />
       <MessageList messages={messages} />
-      <MessageForm text={text} setText={setText} onSubmit={handleSubmit} />
+      <MessageForm value={value} onChange={onChange} onSubmit={handleSubmit} />
     </div>
   );
 }

@@ -1,13 +1,12 @@
-import useAi from '@/hooks/useAi';
-import { memo, useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef } from 'react';
 
 interface Props {
-  text: string;
-  setText: React.Dispatch<React.SetStateAction<string>>;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
 }
 
-function MessageForm({ text, setText, onSubmit }: Props) {
+function MessageForm({ value, onChange, onSubmit }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -25,8 +24,8 @@ function MessageForm({ text, setText, onSubmit }: Props) {
         className="block w-full py-2 pl-4 mx-3 bg-gray-100 rounded-full outline-none focus:text-gray-700 focus:shadow-md"
         name="message"
         required
-        value={text}
-        onChange={(e) => setText(e.target.value)}
+        value={value}
+        onChange={onChange}
         ref={inputRef}
       />
       <button type="submit">
