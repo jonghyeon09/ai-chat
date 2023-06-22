@@ -15,7 +15,7 @@ function MessageForm({ value, onChange, onSubmit }: Props) {
 
   return (
     <form
-      className="flex items-center justify-between w-full p-3 border-t border-gray-300"
+      className="flex items-center justify-between w-full p-3 border-t border-gray-300 bg-white"
       onSubmit={onSubmit}
     >
       <input

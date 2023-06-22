@@ -57,15 +57,21 @@ export default function ChatSection() {
   }, [messages]);
 
   return (
-    <div className="w-full max-w-2xl border rounded mx-auto">
+    <div className="flex flex-col relative w-full h-screen max-w-2xl border rounded mx-auto">
       <ChatHeader />
       <div
-        className="relative w-full p-6 overflow-y-auto h-[40rem]"
+        className="flex-1 first-letter:relative w-full p-6 overflow-y-auto min-h-[40rem]"
         ref={messageListRef}
       >
         <MessageList messages={messages} />
       </div>
-      <MessageForm value={value} onChange={onChange} onSubmit={handleSubmit} />
+      <div className="relative w-full max-w-2xl bottom-0">
+        <MessageForm
+          value={value}
+          onChange={onChange}
+          onSubmit={handleSubmit}
+        />
+      </div>
     </div>
   );
 }

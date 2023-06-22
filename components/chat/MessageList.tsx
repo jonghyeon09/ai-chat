@@ -9,7 +9,7 @@ interface Props {
 
 function MessageList({ messages }: Props) {
   return (
-    <ul className="space-y-2">
+    <ul className="flex-1 space-y-2">
       {messages?.map((message) =>
         message.answer ? (
           <Answer key={message.id} answer={message.answer} />
