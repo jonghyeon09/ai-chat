@@ -23,9 +23,9 @@ export default async function handler(
         },
       });
       const response = await instance.post('/v1/inference/kogpt/generation', {
-        prompt: `질문: ${question || ''} 답:`,
-        max_tokens: 120,
-        temperature: 0.2,
+        prompt: `질문에 답하세요. \nQ: ${question || ''} A:`,
+        max_tokens: 60,
+        temperature: 0.3,
       });
 
       res.status(200).json(response.data);

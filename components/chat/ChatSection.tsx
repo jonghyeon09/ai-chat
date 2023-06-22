@@ -15,28 +15,37 @@ export default function ChatSection() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const chat = {
+    addQuestion();
+    question(value);
+    reset();
+  };
+  const addQuestion = () => {
+    const question = {
       id: count,
       question: value,
     };
+    const ai = {
+      id: count + 1,
+      answer: '...',
+    };
 
-    setMeassages([chat]);
-    if (messages) setMeassages([...messages, chat]);
-    question(value);
-    reset();
-    setCount(count + 1);
+    messages
+      ? setMeassages([...messages, question, ai])
+      : setMeassages([question, ai]);
+    setCount((prev) => prev + 1);
   };
 
   useEffect(() => {
     if (!answer) return;
-    const chat = {
+
+    const ai = {
       id: count,
       answer,
     };
+    const editMessages = messages?.slice(0, messages.length - 1).concat(ai);
 
-    setMeassages([chat]);
-    if (messages) setMeassages([...messages, chat]);
-    setCount(count + 1);
+    if (editMessages) setMeassages(editMessages);
+    setCount((prev) => prev + 1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [answer]);
 
