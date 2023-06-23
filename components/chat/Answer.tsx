@@ -2,9 +2,13 @@ import { forwardRef, useEffect, useState } from 'react';
 
 interface Props {
   answer: string;
+  scrollHandler: () => void;
 }
 
-function Answer({ answer }: Props, ref: React.ForwardedRef<HTMLLIElement>) {
+function Answer(
+  { answer, scrollHandler }: Props,
+  ref: React.ForwardedRef<HTMLLIElement>
+) {
   const [text, setText] = useState('');
   const [count, setCount] = useState(0);
 
@@ -14,7 +18,10 @@ function Answer({ answer }: Props, ref: React.ForwardedRef<HTMLLIElement>) {
       setCount((prev) => prev + 1);
     }, 10);
 
-    if (count === answer.length) clearInterval(interval);
+    if (count === answer.length) {
+      clearInterval(interval);
+      scrollHandler();
+    }
     return () => clearInterval(interval);
   });
 

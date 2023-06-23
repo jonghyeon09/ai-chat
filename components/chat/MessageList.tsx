@@ -11,19 +11,15 @@ function MessageList({ messages }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const liRef = useRef<HTMLLIElement>(null);
 
-  useEffect(() => {
+  const scrollToBottom = () => {
     ref.current?.scrollTo({
       top: ref.current?.scrollHeight,
       behavior: 'smooth',
     });
+  };
 
-    const timer = setTimeout(() => {
-      ref.current?.scrollTo({
-        top: ref.current?.scrollHeight,
-        behavior: 'smooth',
-      });
-    }, 1000);
-    return () => clearTimeout(timer);
+  useEffect(() => {
+    scrollToBottom();
   });
 
   return (
@@ -31,10 +27,15 @@ function MessageList({ messages }: Props) {
       className="flex-1 first-letter:relative w-full p-6 overflow-y-auto"
       ref={ref}
     >
-      <ul className="space-y-2">
+      <ul className="space-y-2 mb-4">
         {messages?.map((message) =>
           message.answer ? (
-            <Answer key={message.id} answer={message.answer} ref={liRef} />
+            <Answer
+              key={message.id}
+              answer={message.answer}
+              ref={liRef}
+              scrollHandler={scrollToBottom}
+            />
           ) : message.question ? (
             <Question key={message.id} question={message.question} />
           ) : null
