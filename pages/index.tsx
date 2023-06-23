@@ -11,8 +11,6 @@ export default function Home() {
         openGraph={{
           type: 'website',
           url: 'https://ai-chat-lemon.vercel.app',
-          title: 'AI 채팅앱',
-          description: 'KoGPT와 대화하는 사이트 입니다.',
         }}
       />
       <Layout>

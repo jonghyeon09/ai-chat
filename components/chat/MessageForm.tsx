@@ -2,16 +2,17 @@ import { memo, useEffect, useRef } from 'react';
 
 interface Props {
   value: string;
+  disabled: boolean;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
 }
 
-function MessageForm({ value, onChange, onSubmit }: Props) {
+function MessageForm({ value, disabled, onChange, onSubmit }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     inputRef.current?.focus();
-  }, []);
+  }, [disabled]);
 
   return (
     <form
@@ -27,6 +28,7 @@ function MessageForm({ value, onChange, onSubmit }: Props) {
         value={value}
         onChange={onChange}
         ref={inputRef}
+        disabled={disabled}
       />
       <button type="submit">
         <svg

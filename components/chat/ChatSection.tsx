@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import ChatHeader from './ChatHeader';
 import MessageForm from './MessageForm';
 import MessageList from './MessageList';
@@ -7,8 +7,8 @@ import { Chat } from '@/types';
 import { useInput } from '@/hooks/useInput';
 
 export default function ChatSection() {
-  const [count, setCount] = useState(0);
   const [messages, setMeassages] = useState<Chat[]>();
+  const [disabled, setDisabled] = useState(false);
   const { value, onChange, reset } = useInput('');
   const { answer, question } = useAi();
 
@@ -17,34 +17,34 @@ export default function ChatSection() {
     addQuestion();
     question(value);
     reset();
+    setDisabled(true);
   };
   const addQuestion = () => {
     const question = {
-      id: count,
+      id: Date.now(),
       question: value,
     };
     const ai = {
-      id: count + 1,
+      id: Date.now(),
       answer: '',
     };
 
     messages
       ? setMeassages([...messages, question, ai])
       : setMeassages([question, ai]);
-    setCount((prev) => prev + 1);
   };
 
   useEffect(() => {
+    setDisabled(false);
     if (!answer) return;
 
     const ai = {
-      id: count,
+      id: Date.now(),
       answer,
     };
     const editMessages = messages?.slice(0, messages.length - 1).concat(ai);
 
     if (editMessages) setMeassages(editMessages);
-    setCount((prev) => prev + 1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [answer]);
 
@@ -55,6 +55,7 @@ export default function ChatSection() {
       <div className="relative w-full max-w-2xl bottom-0">
         <MessageForm
           value={value}
+          disabled={disabled}
           onChange={onChange}
           onSubmit={handleSubmit}
         />
