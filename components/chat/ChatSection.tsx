@@ -11,7 +11,6 @@ export default function ChatSection() {
   const [messages, setMeassages] = useState<Chat[]>();
   const { value, onChange, reset } = useInput('');
   const { answer, question } = useAi();
-  const messageListRef = useRef<HTMLDivElement>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -26,7 +25,7 @@ export default function ChatSection() {
     };
     const ai = {
       id: count + 1,
-      answer: '...',
+      answer: '',
     };
 
     messages
@@ -49,22 +48,10 @@ export default function ChatSection() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [answer]);
 
-  useEffect(() => {
-    messageListRef.current?.scrollTo({
-      top: messageListRef.current?.scrollHeight,
-      behavior: 'smooth',
-    });
-  }, [messages]);
-
   return (
-    <div className="flex flex-col relative w-full h-screen max-w-2xl border rounded mx-auto">
+    <div className="flex flex-col relative w-full h-screen md:h-[40rem] max-w-2xl border rounded mx-auto">
       <ChatHeader />
-      <div
-        className="flex-1 first-letter:relative w-full p-6 overflow-y-auto min-h-[40rem]"
-        ref={messageListRef}
-      >
-        <MessageList messages={messages} />
-      </div>
+      <MessageList messages={messages} />
       <div className="relative w-full max-w-2xl bottom-0">
         <MessageForm
           value={value}

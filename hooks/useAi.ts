@@ -1,6 +1,5 @@
 import api from '@/api';
-import { Answer } from '@/types';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import useSWR from 'swr';
 
 export const AI_KEY = '/ai';
