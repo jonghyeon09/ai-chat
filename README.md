@@ -1,38 +1,136 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# AI-Chat
 
-## Getting Started
+**카카오 KoGPT와 대화하는 AI 채팅앱 입니다.**
 
-First, run the development server:
+[사이트 링크](https://ai-chat-lemon.vercel.app/)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+## 기술 스택
+
+`Next.js` `TypeScript` `SWR` `TailwindCSS`
+
+## 설치 및 실행
+
+### 설치
+
+`npm install`
+
+### 실행
+
+1. 카카오 API Key 발급
+
+   > [https://developers.kakao.com/](https://developers.kakao.com/)
+
+2. `.env.local` 파일 생성
+
+   ```bash
+   KAKAO_API_KEY="Key"
+   ```
+
+3. 실행
+
+   `npm run dev`
+
+## 구현 기능
+
+- KoGPT REST API
+- AI 응답 타이핑 효과
+- 채팅 전송 시 스크롤 이동
+
+## KoGPT REST API
+
+**KoGPT API는 REST API 방식으로 사용 가능합니다.**
+
+> https://developers.kakao.com/docs/latest/ko/kogpt/rest-api
+
+### 요청
+
+- Method: `POST`
+- URL: `https://api.kakaobrain.com/v1/inference/kogpt/generation`
+- Query
+  - prompt: string
+  - max_tokens: number
+  - temperature: number
+
+```ts
+// pages/api/ai.ts
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse<Answer | Error>
+) {
+  if (req.method === 'POST') {
+    try {
+      const { question } = req.body;
+      const instance = axios.create({
+        baseURL: 'https://api.kakaobrain.com',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `KakaoAK ${API_KEY}`,
+        },
+      });
+      const response = await instance.post('/v1/inference/kogpt/generation', {
+        prompt: `질문에 답하세요.\nQ: ${question || ''} A:`,
+        max_tokens: Math.floor(Math.random() * (100 - 1)) + 1,
+        temperature: 0.3,
+      });
+
+      res.status(200).json(response.data);
+    } catch (error) {
+      res.status(500).json({ error: 'API 호출에 실패했습니다.' });
+    }
+  }
+}
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+KoGPT가 생성한 결과의 길이는 `max_tokens`쿼리 값 길이로 결정되서 100 이하의 랜덤한 수로 설정 하였습니다.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+### 응답
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+> https://developers.kakao.com/docs/latest/ko/kogpt/rest-api#request-response
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## API
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### 요청
 
-## Learn More
+- URL: `/api/ai`
+- Method: `POST`
+- Body:
+  - question: string
 
-To learn more about Next.js, take a look at the following resources:
+## 타이핑 효과
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```ts
+// components/chat/Answer.tsx
+const [text, setText] = useState('');
+const [count, setCount] = useState(0);
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+useEffect(() => {
+  const interval = setInterval(() => {
+    setText((prev) => prev + answer[count]);
+    setCount((prev) => prev + 1);
+  }, 10);
 
-## Deploy on Vercel
+  if (count === answer.length) {
+    clearInterval(interval);
+    scrollHandler();
+  }
+  return () => clearInterval(interval);
+});
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 스크롤 이동 기능
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+```ts
+// components/chat/MessageList.tsx
+const ref = useRef<HTMLDivElement>(null);
+
+const scrollToBottom = () => {
+  ref.current?.scrollTo({
+    top: ref.current?.scrollHeight,
+    behavior: 'smooth',
+  });
+};
+
+useEffect(() => {
+  scrollToBottom();
+});
+```
